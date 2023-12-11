@@ -2,7 +2,10 @@ import json
 import os.path
 import re
 
+# json file to uwuify the string values of
 langJson = "lang_from_bui.json"
+
+catgirl = False
 
 data = {}
 
@@ -31,12 +34,11 @@ def list_or_string(value):
     return value
 
 def uwuify(text: str):
-    #needs to not replace <l> and <r> enz (PROBLAY using regex?)
+    text = re.sub("[rl]+(?![^<]*\>)", "w", text)
+    text = re.sub("[RL]+(?![^<]*\>)", "W", text)
 
-    text = text.replace("l", "w")
-    text = text.replace("L", "W")
-    text = text.replace("r", "w")
-    text = text.replace("R", "W")
+    if catgirl == True:
+        text = re.sub("nya", "nya")
 
     return text
 
