@@ -1,4 +1,12 @@
 # UwUify Risk of Rain Returns
+Changes:
+<ul>
+  <li>"R" and "L" -> W </li>
+  <li>the -> da </li>
+  <li>they -> dey</li>
+  <li>is -> ish</li>
+</ul>
+(if you have any ideas for what to change let me know)
 
 ## Instructions
 1. Unzip the file
