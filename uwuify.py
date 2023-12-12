@@ -6,6 +6,7 @@ import re
 langJson = "lang_from_bui.json"
 
 catgirl = False
+moreuwu = True
 
 data = {}
 
@@ -39,6 +40,21 @@ def uwuify(text: str):
 
     if catgirl == True:
         text = re.sub("nya", "nya")
+
+    if moreuwu == True:
+        text = re.sub(r"\b(the)\b", "da", text)
+        text = re.sub(r"\b(they)\b", "dey", text)
+        text = re.sub(r"\b(is)\b", "ish", text)
+
+        #start with CAPITAL LETTER
+        text = re.sub(r"\b(The)\b", "Da", text)
+        text = re.sub(r"\b(They)\b", "Dey", text)
+        text = re.sub(r"\b(Is)\b", "Ish", text)
+
+        #ALL CAPS
+        text = re.sub(r"\b(THE)\b", "DA", text)
+        text = re.sub(r"\b(THEY)\b", "DEY", text)
+        text = re.sub(r"\b(IS)\b", "ISH", text)
 
     return text
 
