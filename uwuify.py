@@ -2,95 +2,74 @@ import json
 import os.path
 import re
 
-# json file to uwuify the string values of
-langJson = "lang_from_bui.json"
+# The json file taken as input
+input_json = "lang_from_bui.json"
 
-catgirl = False
-moreuwu = True
+# The json file created as output (I recommend to NOT make this the same as the input to not replace the file)
+output_json = "uwu-engwish/lang.json"
 
-data = {}
 
+# Replaces text using regex (Change this function if you want it to do something else then uwuify)
+def text_replace(text: str):
+    # replaces all L and R to W
+    text = re.sub("[rl]+(?![^<]*\>)", "w", text)
+    text = re.sub("[RL]+(?![^<]*\>)", "W", text)
+
+    # replaces: the to de, they to dey, is to ish
+    text = re.sub(r"\b(the)\b", "de", text)
+    text = re.sub(r"\b(they)\b", "dey", text)
+    text = re.sub(r"\b(is)\b", "ish", text)
+
+    # same as above but when starting with a capital letter
+    text = re.sub(r"\b(The)\b", "De", text)
+    text = re.sub(r"\b(They)\b", "Dey", text)
+    text = re.sub(r"\b(Is)\b", "Ish", text)
+
+    # same as above but when all caps
+    text = re.sub(r"\b(THE)\b", "DE", text)
+    text = re.sub(r"\b(THEY)\b", "DEY", text)
+    text = re.sub(r"\b(IS)\b", "ISH", text)
+
+    return text
+
+
+
+# Reads the input json file and returns in contents 
 def read_json_data():
-    with open(langJson, "r") as file:
+    with open(input_json, "r") as file:
         fileContents = file.read()
 
     data = json.loads(fileContents)
 
     return data
 
-def write_json_data():
-    data_json = json.dumps(data, indent=4)
-    with open("uwu-engwish/lang.json", "w") as file:
-        file.write(data_json)
+# Writes the output json file 
+def write_json_data(data: dict):
+    formatted_json = json.dumps(data, indent=4)
+    with open(output_json, "w") as file:
+        file.write(formatted_json)
 
-
-def list_or_string(value):
+# Handles the diffrent types of data
+def replace(value):
     if isinstance(value, str):
-        value = uwuify(value)
-    
-    if isinstance(value, list):
-        for i in range(len(value)):
-            value[i] = uwuify(value[i])
+        value = text_replace(value)
 
+    elif isinstance(value, list):
+        for i in range(len(value)):
+            value[i] = replace(value[i])
+
+    elif isinstance(value, dict):
+        for key in value:
+            value[key] = replace(value[key])
+    
     return value
 
-def uwuify(text: str):
-    text = re.sub("[rl]+(?![^<]*\>)", "w", text)
-    text = re.sub("[RL]+(?![^<]*\>)", "W", text)
 
-    if catgirl == True:
-        text = re.sub("nya", "nya")
-
-    if moreuwu == True:
-        text = re.sub(r"\b(the)\b", "da", text)
-        text = re.sub(r"\b(they)\b", "dey", text)
-        text = re.sub(r"\b(is)\b", "ish", text)
-
-        #start with CAPITAL LETTER
-        text = re.sub(r"\b(The)\b", "Da", text)
-        text = re.sub(r"\b(They)\b", "Dey", text)
-        text = re.sub(r"\b(Is)\b", "Ish", text)
-
-        #ALL CAPS
-        text = re.sub(r"\b(THE)\b", "DA", text)
-        text = re.sub(r"\b(THEY)\b", "DEY", text)
-        text = re.sub(r"\b(IS)\b", "ISH", text)
-
-    return text
-
-
-if os.path.isfile(langJson):
-    data = read_json_data()
-    for key in data:
-        # makes sure its not a META value
-        if not "META" in key:
-
-            # checks if its already a value or another dict
-            if not isinstance(data[key], dict):
-                    data[key] = list_or_string(data[key])
-            
-            else:
-                # values in dict
-                for key2 in data[key]:
-                    # another check if its a value or a dict (yes this code sucks)
-                    if not isinstance(data[key][key2], dict):
-                        data[key][key2] = list_or_string(data[key][key2])
-
-                    else:
-                        # values in dict in dict
-                        for key3 in data[key][key2]:
-                            # another check if its a value or a dict (yes this code sucks)
-                            if not isinstance(data[key][key2][key3], dict):
-                                data[key][key2][key3] = list_or_string(data[key][key2][key3])
-                            
-                            else:
-                                # values in dict in dict in dict (OMFG)
-                                for key4 in data[key][key2][key3]:
-                                    data[key][key2][key3][key4] = list_or_string(data[key][key2][key3][key4])
-                                
-    write_json_data()
-
-
+if os.path.isfile(input_json):
+    json_data = read_json_data()
+    json_data = replace(json_data)
+    write_json_data(json_data)
+    print(f"{output_json} has been made")
 
 else:
-    print(f"FILE {langJson} NOT FOUND!")
+    print(f"ERROR: {input_json} was not found! (try changing the input_json)")
