@@ -15,4 +15,4 @@ Changes:
 
 
 ## Credit:
-The lang.json is a uwuified version of Slightly Better UI mod by x753
+The lang_from_bui.json is from the Slightly Better UI mod by x753
